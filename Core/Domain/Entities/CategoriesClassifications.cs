@@ -13,8 +13,8 @@ namespace Domain.Entities
 
         public int ClassificationId { get; set; }
 
-        public Category Category { get; set; }
+        public Category? Category { get; set; }
 
-        public Classification Classification { get; set; }
+        public Classification? Classification { get; set; }
     }
 }

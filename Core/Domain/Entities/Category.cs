@@ -23,7 +23,7 @@ namespace Domain.Entities
 
         public ICollection<Category> SubCategories { get; set; }
 
-        public ICollection<CategoriesClassifications> Classifications { get; set; }
+        public ICollection<Classification>? Classifications { get; set; }
 
     }
 }

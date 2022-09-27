@@ -16,6 +16,6 @@ namespace Domain.Entities
 
         public DataType DataType { get; set; }
 
-        public ICollection<CategoriesClassifications> Categories { get; set; }
+        public ICollection<Category>? Categories { get; set; }
     }
 }

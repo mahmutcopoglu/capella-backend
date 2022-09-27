@@ -25,14 +25,11 @@ namespace Persistence.Contexts
                 .WithMany(category => category.SubCategories)
                 .HasForeignKey(category => category.ParentCategoryId);
 
-            modelBuilder.Entity<CategoriesClassifications>()
-                .HasKey(cc => new { cc.CategoryId, cc.ClassificationId });
-            modelBuilder.Entity<CategoriesClassifications>()
-                .HasOne(cc => cc.Category)
-                .WithMany(c => c.Classifications);
-            modelBuilder.Entity<CategoriesClassifications>()
-                .HasOne(cc => cc.Classification)
-                .WithMany(c => c.Categories);
+            modelBuilder
+                .Entity<Classification>()
+                .HasMany(p => p.Categories)
+                .WithMany(p => p.Classifications)
+                .UsingEntity(j => j.ToTable("CategoriesClassifications"));
         }
     }
 }

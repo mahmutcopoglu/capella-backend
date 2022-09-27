@@ -27,25 +27,31 @@ namespace API.Controllers
         [HttpPost("/classification")]
         public async Task<IActionResult> AddClassification([FromBody] ClassificationDto classificationDto)
         {
-            var category = _mapper.Map<Category>(classificationDto.Categories);
-            foreach (var item in classificationDto.Categories)
-            {
-                Classification classification = new()
-                {
-                    Name = classificationDto.Name,
-                    Code = Guid.NewGuid().ToString(),
-                    DataType = (Domain.Enums.DataType)classificationDto.DataType,
-                    Categories = new HashSet<CategoriesClassifications>()
-                    {
-                        new()
-                        {
-                            CategoryId = item.ParentCategoryId;
-                        }
-                    }
+            Classification classification = new();
 
-                };
+            classification.Name = classificationDto.Name;
+            classification.Code = Guid.NewGuid().ToString();
+            classification.DataType = (Domain.Enums.DataType)classificationDto.DataType;
+
+            var category = new HashSet<Category>();
+            foreach(var item in classificationDto.Categories)
+            {
+                var cat = _categoryReadRepository.GetWhere(x => x.Code == item.Code).FirstOrDefault();
+                category.Add(cat);
             }
-           
+
+            classification.Categories = category;
+
+            var result = await _classificationWriteRepository.AddAsync(classification);
+            if (!result)
+            {
+                return BadRequest();
+            }
+            else
+            {
+                return Ok(classification);
+            }
+
         }
     }
 }
