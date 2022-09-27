@@ -26,6 +26,12 @@ namespace Application.Mapping
             CreateMap<Category, CategoryDto>().ReverseMap();
 
             #endregion
+
+            #region Classification Mapper
+
+            CreateMap<Classification, ClassificationDto>().ReverseMap();
+
+            #endregion
         }
     }
 }

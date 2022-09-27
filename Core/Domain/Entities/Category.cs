@@ -22,6 +22,8 @@ namespace Domain.Entities
         public int Level { get; set; }
 
         public ICollection<Category> SubCategories { get; set; }
-        
+
+        public ICollection<CategoriesClassifications> Classifications { get; set; }
+
     }
 }
