@@ -1,4 +1,5 @@
-﻿using Application.Repositories.ProductAbstract;
+﻿using Application.Repositories;
+using Application.Repositories.ProductAbstract;
 using Domain.Entities;
 using Persistence.Contexts;
 using System;
@@ -9,9 +10,9 @@ using System.Threading.Tasks;
 
 namespace Persistence.Repositories
 {
-    public class ProductWriteRepository : WriteRepository<Product>, IProductWriteRepository
+    public class UnitReadRepository : ReadRepository<Unit>, IUnitReadRepository
     {
-        public ProductWriteRepository(CapellaDbContext context) : base(context)
+        public UnitReadRepository(CapellaDbContext context) : base(context)
         {
 
         }

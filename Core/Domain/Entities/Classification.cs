@@ -11,11 +11,9 @@ namespace Domain.Entities
     public class Classification: BaseEntity
     {
         public string Code { get; set; }
-
         public string Name { get; set; }
-
         public DataType DataType { get; set; }
-
         public ICollection<Category>? Categories { get; set; }
+        public ICollection<Unit>? UnitTypes { get; set; }
     }
 }
