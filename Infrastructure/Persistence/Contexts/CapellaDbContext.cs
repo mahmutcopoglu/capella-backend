@@ -34,9 +34,13 @@ namespace Persistence.Contexts
 
             modelBuilder
                 .Entity<Unit>()
+                .HasIndex(u => u.Code).IsUnique();
+
+            modelBuilder
+                .Entity<Unit>()
                 .HasMany(u => u.Classifications)
-                .WithMany(c => c.UnitTypes)
-                .UsingEntity(j => j.ToTable("CategoriesUnitTypes"));
+                .WithMany(c => c.Units)
+                .UsingEntity(j => j.ToTable("ClassificationsUnits"));
         }
     }
 }

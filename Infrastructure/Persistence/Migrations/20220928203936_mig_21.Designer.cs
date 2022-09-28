@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Persistence.Contexts;
@@ -11,9 +12,10 @@ using Persistence.Contexts;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(CapellaDbContext))]
-    partial class CapellaDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220928203936_mig_21")]
+    partial class mig_21
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -42,14 +44,14 @@ namespace Persistence.Migrations
                     b.Property<int>("ClassificationsId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("UnitsId")
+                    b.Property<int>("UnitTypesId")
                         .HasColumnType("integer");
 
-                    b.HasKey("ClassificationsId", "UnitsId");
+                    b.HasKey("ClassificationsId", "UnitTypesId");
 
-                    b.HasIndex("UnitsId");
+                    b.HasIndex("UnitTypesId");
 
-                    b.ToTable("ClassificationsUnits", (string)null);
+                    b.ToTable("CategoriesUnitTypes", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.Category", b =>
@@ -195,7 +197,7 @@ namespace Persistence.Migrations
 
                     b.HasOne("Domain.Entities.Unit", null)
                         .WithMany()
-                        .HasForeignKey("UnitsId")
+                        .HasForeignKey("UnitTypesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

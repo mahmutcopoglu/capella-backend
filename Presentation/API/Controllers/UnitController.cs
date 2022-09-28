@@ -28,7 +28,6 @@ namespace API.Controllers
         public async Task<IActionResult> AddUnit([FromBody] UnitDto unitDto)
         {
             var unit = _mapper.Map<Unit>(unitDto);
-            unit.Code = Guid.NewGuid().ToString();
             var result = await _unitWriteRepository.AddAsync(unit);
             if (!result)
             {

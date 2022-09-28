@@ -14,5 +14,7 @@ namespace Application.DataTransferObject
         public DataType? DataType { get; set; }
 
         public ICollection<CategoryDto>? Categories { get; set; }
+
+        public ICollection<UnitDto>? Units { get; set; }
     }
 }
