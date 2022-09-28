@@ -17,6 +17,7 @@ namespace Persistence.Contexts
         public DbSet<Product> Products { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Classification> Classifications { get; set; }
+        public DbSet<Unit> Units { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -30,6 +31,16 @@ namespace Persistence.Contexts
                 .HasMany(p => p.Categories)
                 .WithMany(p => p.Classifications)
                 .UsingEntity(j => j.ToTable("CategoriesClassifications"));
+
+            modelBuilder
+                .Entity<Unit>()
+                .HasIndex(u => u.Code).IsUnique();
+
+            modelBuilder
+                .Entity<Unit>()
+                .HasMany(u => u.Classifications)
+                .WithMany(c => c.Units)
+                .UsingEntity(j => j.ToTable("ClassificationsUnits"));
         }
     }
 }

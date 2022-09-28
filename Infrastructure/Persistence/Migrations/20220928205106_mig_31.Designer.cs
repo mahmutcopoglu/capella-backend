@@ -12,8 +12,8 @@ using Persistence.Contexts;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(CapellaDbContext))]
-    [Migration("20220927192307_mig_19")]
-    partial class mig_19
+    [Migration("20220928205106_mig_31")]
+    partial class mig_31
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -37,6 +37,21 @@ namespace Persistence.Migrations
                     b.HasIndex("ClassificationsId");
 
                     b.ToTable("CategoriesClassifications", (string)null);
+                });
+
+            modelBuilder.Entity("ClassificationUnit", b =>
+                {
+                    b.Property<int>("ClassificationsId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("UnitsId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("ClassificationsId", "UnitsId");
+
+                    b.HasIndex("UnitsId");
+
+                    b.ToTable("ClassificationsUnits", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.Category", b =>
@@ -133,6 +148,30 @@ namespace Persistence.Migrations
                     b.ToTable("Products");
                 });
 
+            modelBuilder.Entity("Domain.Entities.Unit", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Code")
+                        .IsUnique();
+
+                    b.ToTable("Units");
+                });
+
             modelBuilder.Entity("CategoryClassification", b =>
                 {
                     b.HasOne("Domain.Entities.Category", null)
@@ -144,6 +183,21 @@ namespace Persistence.Migrations
                     b.HasOne("Domain.Entities.Classification", null)
                         .WithMany()
                         .HasForeignKey("ClassificationsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("ClassificationUnit", b =>
+                {
+                    b.HasOne("Domain.Entities.Classification", null)
+                        .WithMany()
+                        .HasForeignKey("ClassificationsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.Unit", null)
+                        .WithMany()
+                        .HasForeignKey("UnitsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

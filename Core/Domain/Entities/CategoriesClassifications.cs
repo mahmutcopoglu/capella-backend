@@ -16,5 +16,7 @@ namespace Domain.Entities
         public Category? Category { get; set; }
 
         public Classification? Classification { get; set; }
+
+        
     }
 }

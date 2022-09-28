@@ -17,7 +17,6 @@ namespace Application.Mapping
 
             CreateMap<Product, ProductDto>().ReverseMap();
 
-
             #endregion
 
 
@@ -31,6 +30,12 @@ namespace Application.Mapping
             #region Classification Mapper
 
             CreateMap<Classification, ClassificationDto>().ReverseMap();
+
+            #endregion
+
+            #region Unit Mapper
+
+            CreateMap<Unit, UnitDto>().ReverseMap();
 
             #endregion
         }

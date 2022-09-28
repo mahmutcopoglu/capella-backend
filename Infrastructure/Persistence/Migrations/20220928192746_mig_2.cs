@@ -5,63 +5,61 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Persistence.Migrations
 {
-    public partial class mig_14 : Migration
+    public partial class mig_2 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Classification",
+                name: "Units",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Code = table.Column<string>(type: "text", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    DataType = table.Column<int>(type: "integer", nullable: false)
+                    Name = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Classification", x => x.Id);
+                    table.PrimaryKey("PK_Units", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "CategoriesClassifications",
+                name: "CategoriesUnitTypes",
                 columns: table => new
                 {
-                    CategoryId = table.Column<int>(type: "integer", nullable: false),
-                    ClassificationId = table.Column<int>(type: "integer", nullable: false),
-                    Id = table.Column<int>(type: "integer", nullable: false)
+                    ClassificationsId = table.Column<int>(type: "integer", nullable: false),
+                    UnitTypesId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CategoriesClassifications", x => new { x.CategoryId, x.ClassificationId });
+                    table.PrimaryKey("PK_CategoriesUnitTypes", x => new { x.ClassificationsId, x.UnitTypesId });
                     table.ForeignKey(
-                        name: "FK_CategoriesClassifications_Categories_CategoryId",
-                        column: x => x.CategoryId,
-                        principalTable: "Categories",
+                        name: "FK_CategoriesUnitTypes_Classifications_ClassificationsId",
+                        column: x => x.ClassificationsId,
+                        principalTable: "Classifications",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_CategoriesClassifications_Classification_ClassificationId",
-                        column: x => x.ClassificationId,
-                        principalTable: "Classification",
+                        name: "FK_CategoriesUnitTypes_Units_UnitTypesId",
+                        column: x => x.UnitTypesId,
+                        principalTable: "Units",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_CategoriesClassifications_ClassificationId",
-                table: "CategoriesClassifications",
-                column: "ClassificationId");
+                name: "IX_CategoriesUnitTypes_UnitTypesId",
+                table: "CategoriesUnitTypes",
+                column: "UnitTypesId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "CategoriesClassifications");
+                name: "CategoriesUnitTypes");
 
             migrationBuilder.DropTable(
-                name: "Classification");
+                name: "Units");
         }
     }
 }
