@@ -4,6 +4,7 @@ using AutoMapper;
 using Domain.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
@@ -53,5 +54,20 @@ namespace API.Controllers
             }
 
         }
+
+        [HttpGet("/classification")]
+        public async Task<IActionResult> ClassificationList()
+        {
+            List<Classification> classification = await _classificationReadRepository.GetAll().ToListAsync();
+            return Ok(classification);
+        }
+
+        [HttpGet("/classification/{id}")]
+        public async Task<IActionResult> ClassificationGetById(int id)
+        {
+            var classificationGetId = await _classificationReadRepository.GetByIdAsync(id);
+            return Ok(classificationGetId);
+        }
+
     }
 }
