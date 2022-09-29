@@ -18,6 +18,8 @@ namespace Persistence.Contexts
         public DbSet<Category> Categories { get; set; }
         public DbSet<Classification> Classifications { get; set; }
         public DbSet<Unit> Units { get; set; }
+        public DbSet<ClassificationAttribute> ClassificationAttributes { get; set; }    
+        public DbSet<ClassificationAttributeValue> ClassificationAttributeValues { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

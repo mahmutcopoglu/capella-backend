@@ -25,6 +25,10 @@ namespace Persistence
             services.AddScoped<IClassificationReadRepository, ClassificationReadRepository>();
             services.AddScoped<IUnitReadRepository, UnitReadRepository>();
             services.AddScoped<IUnitWriteRepository, UnitWriteRepository>();
+            services.AddScoped<IClassificationAttributeReadRepository, ClassificationAttributeReadRepository>();
+            services.AddScoped<IClassificationAttributeWriteRepository, ClassificationAttributeWriteRepository>();  
+            services.AddScoped<IClassificationAttributeValueReadRepository, ClassificationAttributeValueReadRepository>();  
+            services.AddScoped<IClassificationAttributeValueWriteRepository, ClassificationAttributeValueWriteRepository>();    
         }
     }
 }
