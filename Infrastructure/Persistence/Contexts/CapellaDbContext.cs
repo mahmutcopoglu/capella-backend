@@ -28,6 +28,11 @@ namespace Persistence.Contexts
                 .WithMany(category => category.SubCategories)
                 .HasForeignKey(category => category.ParentCategoryId);
 
+            modelBuilder.Entity<Product>()
+                .HasMany(product=> product.Categories)
+                .WithMany(category => category.Products)
+                .UsingEntity(j => j.ToTable("ProductsCategories"));
+
             modelBuilder
                 .Entity<Classification>()
                 .HasMany(p => p.Categories)
@@ -39,10 +44,18 @@ namespace Persistence.Contexts
                 .HasIndex(u => u.Code).IsUnique();
 
             modelBuilder
-                .Entity<Unit>()
-                .HasMany(u => u.Classifications)
-                .WithMany(c => c.Units)
-                .UsingEntity(j => j.ToTable("ClassificationsUnits"));
+                .Entity<Classification>()
+                .HasMany(classification => classification.ClassificationAttributes)
+                .WithOne(classificationAttribute => classificationAttribute.Classification);
+            
+
+            modelBuilder
+                .Entity<Product>()
+                .HasMany(product => product.ClassificationAttributeValues)
+                .WithOne(classificationAttributeValue => classificationAttributeValue.Product);
+
+
+            
         }
     }
 }

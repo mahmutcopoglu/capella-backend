@@ -8,6 +8,7 @@ namespace Application.DataTransferObject
 {
     public class ClassificationAttributeDto
     {
-
+        public string Code { get; set; }
+        public UnitDto? Unit { get; set; }
     }
 }

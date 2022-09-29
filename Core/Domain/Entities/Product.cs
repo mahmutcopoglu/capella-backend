@@ -16,6 +16,8 @@ namespace Domain.Entities
         public DateTime Startdate { get; set; }
         public DateTime Enddate { get; set; }
         public string Description { get; set; }
+        public ICollection<Category> Categories { get; set; }
+        public ICollection<ClassificationAttributeValue> ClassificationAttributeValues { get; set; }
 
     }
 }

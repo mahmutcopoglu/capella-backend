@@ -9,8 +9,9 @@ namespace Domain.Entities
 {
     public class ClassificationAttributeValue : BaseEntity
     {
-        public int Value { get; set; }  
-        public Product Products { get; set; }   
-        public ICollection<ClassificationAttribute> ClassificationAttributes{ get; set; }    
+        public string Code { get; set; }
+        public string Value { get; set; }  
+        public Product Product { get; set; }   
+        public ClassificationAttribute ClassificationAttribute{ get; set; }    
     }
 }

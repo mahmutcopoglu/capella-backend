@@ -14,15 +14,18 @@ namespace API.Controllers
     {
         private readonly IClassificationReadRepository _classificationReadRepository;
         private readonly IClassificationWriteRepository _classificationWriteRepository;
+        private readonly IClassificationAttributeWriteRepository _classificationAttributeWriteRepository;
         private readonly ICategoryReadRepository _categoryReadRepository;
         private readonly IUnitReadRepository _unitReadRepository;
         private readonly IMapper _mapper;
 
-        public ClassificationController(IClassificationReadRepository classificationReadRepository, IClassificationWriteRepository classificationWriteRepository, IMapper mapper, ICategoryReadRepository categoryReadRepository, IUnitReadRepository unitReadRepository)
+        public ClassificationController(IClassificationReadRepository classificationReadRepository, IClassificationWriteRepository classificationWriteRepository,
+            IMapper mapper, ICategoryReadRepository categoryReadRepository, IUnitReadRepository unitReadRepository, IClassificationAttributeWriteRepository classificationAttributeWriteRepository)
         {
             _classificationReadRepository = classificationReadRepository;
             _classificationWriteRepository = classificationWriteRepository;
             _categoryReadRepository = categoryReadRepository;
+            _classificationAttributeWriteRepository = classificationAttributeWriteRepository;
             _unitReadRepository = unitReadRepository;
             _mapper = mapper;
         }
@@ -45,16 +48,15 @@ namespace API.Controllers
 
             classification.Categories = category;
 
-            var units = new HashSet<Unit>();
-            foreach (var item in classificationDto.Units)
-            {
-                var unit = _unitReadRepository.GetWhere(x => x.Code == item.Code).FirstOrDefault();
-                units.Add(unit);
-            }
+            var classificationAttributes = new HashSet<ClassificationAttribute>();
 
-            classification.Units = units;
+            classification.ClassificationAttributes = classificationAttributes;
 
-            var result = await _classificationWriteRepository.AddAsync(classification);
+            //foreach(var item in classificationDto.ClassificationAttribute)
+            //{
+            //    await _classificationAttributeWriteRepository.AddAsync(classification,)
+            //}
+            //var result = await _classificationWriteRepository.AddAsync(classification);
             if (!result)
             {
                 return BadRequest();
