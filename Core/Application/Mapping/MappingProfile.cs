@@ -30,6 +30,7 @@ namespace Application.Mapping
             #region Classification Mapper
 
             CreateMap<Classification, ClassificationDto>().ReverseMap();
+           
 
             #endregion
 

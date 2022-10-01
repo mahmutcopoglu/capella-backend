@@ -15,8 +15,6 @@ namespace Application.DataTransferObject
 
         public ICollection<CategoryDto>? Categories { get; set; }
 
-        public ICollection<UnitDto>? Units { get; set; }
-
-        public ICollection<ClassificationAttributeDto>? ClassificationAttribute { get; set; }
+        public ICollection<ClassificationAttributeDto> ClassificationAttribute { get; set; }
     }
 }

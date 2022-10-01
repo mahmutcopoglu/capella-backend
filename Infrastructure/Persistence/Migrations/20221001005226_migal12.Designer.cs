@@ -12,8 +12,8 @@ using Persistence.Contexts;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(CapellaDbContext))]
-    [Migration("20220928192746_mig_2")]
-    partial class mig_2
+    [Migration("20221001005226_migal12")]
+    partial class migal12
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -39,19 +39,34 @@ namespace Persistence.Migrations
                     b.ToTable("CategoriesClassifications", (string)null);
                 });
 
-            modelBuilder.Entity("ClassificationUnit", b =>
+            modelBuilder.Entity("CategoryProduct", b =>
                 {
+                    b.Property<int>("CategoriesId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ProductsId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("CategoriesId", "ProductsId");
+
+                    b.HasIndex("ProductsId");
+
+                    b.ToTable("ProductsCategories", (string)null);
+                });
+
+            modelBuilder.Entity("ClassificationClassificationAttribute", b =>
+                {
+                    b.Property<int>("ClassificationAttributesId")
+                        .HasColumnType("integer");
+
                     b.Property<int>("ClassificationsId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("UnitTypesId")
-                        .HasColumnType("integer");
+                    b.HasKey("ClassificationAttributesId", "ClassificationsId");
 
-                    b.HasKey("ClassificationsId", "UnitTypesId");
+                    b.HasIndex("ClassificationsId");
 
-                    b.HasIndex("UnitTypesId");
-
-                    b.ToTable("CategoriesUnitTypes", (string)null);
+                    b.ToTable("ClassificationClassificationAttribute", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.Category", b =>
@@ -111,6 +126,59 @@ namespace Persistence.Migrations
                     b.ToTable("Classifications");
                 });
 
+            modelBuilder.Entity("Domain.Entities.ClassificationAttribute", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("UnitId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UnitId");
+
+                    b.ToTable("ClassificationAttributes");
+                });
+
+            modelBuilder.Entity("Domain.Entities.ClassificationAttributeValue", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ClassificationAttributeId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClassificationAttributeId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("ClassificationAttributeValues");
+                });
+
             modelBuilder.Entity("Domain.Entities.Product", b =>
                 {
                     b.Property<int>("Id")
@@ -166,6 +234,9 @@ namespace Persistence.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Code")
+                        .IsUnique();
+
                     b.ToTable("Units");
                 });
 
@@ -184,17 +255,32 @@ namespace Persistence.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("ClassificationUnit", b =>
+            modelBuilder.Entity("CategoryProduct", b =>
                 {
-                    b.HasOne("Domain.Entities.Classification", null)
+                    b.HasOne("Domain.Entities.Category", null)
                         .WithMany()
-                        .HasForeignKey("ClassificationsId")
+                        .HasForeignKey("CategoriesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Entities.Unit", null)
+                    b.HasOne("Domain.Entities.Product", null)
                         .WithMany()
-                        .HasForeignKey("UnitTypesId")
+                        .HasForeignKey("ProductsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("ClassificationClassificationAttribute", b =>
+                {
+                    b.HasOne("Domain.Entities.ClassificationAttribute", null)
+                        .WithMany()
+                        .HasForeignKey("ClassificationAttributesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.Classification", null)
+                        .WithMany()
+                        .HasForeignKey("ClassificationsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -208,9 +294,44 @@ namespace Persistence.Migrations
                     b.Navigation("ParentCategory");
                 });
 
+            modelBuilder.Entity("Domain.Entities.ClassificationAttribute", b =>
+                {
+                    b.HasOne("Domain.Entities.Unit", "Unit")
+                        .WithMany()
+                        .HasForeignKey("UnitId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Unit");
+                });
+
+            modelBuilder.Entity("Domain.Entities.ClassificationAttributeValue", b =>
+                {
+                    b.HasOne("Domain.Entities.ClassificationAttribute", "ClassificationAttribute")
+                        .WithMany()
+                        .HasForeignKey("ClassificationAttributeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.Product", "Product")
+                        .WithMany("ClassificationAttributeValues")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ClassificationAttribute");
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("Domain.Entities.Category", b =>
                 {
                     b.Navigation("SubCategories");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Product", b =>
+                {
+                    b.Navigation("ClassificationAttributeValues");
                 });
 #pragma warning restore 612, 618
         }

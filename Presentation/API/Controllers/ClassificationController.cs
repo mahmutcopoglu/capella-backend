@@ -52,12 +52,25 @@ namespace API.Controllers
 
             classification.ClassificationAttributes = classificationAttributes;
 
-            //foreach(var item in classificationDto.ClassificationAttribute)
-            //{
-            //    await _classificationAttributeWriteRepository.AddAsync(classification,)
-            //}
-            //var result = await _classificationWriteRepository.AddAsync(classification);
-            if (!result)
+            var result = await _classificationWriteRepository.AddAsync(classification);
+
+            ClassificationAttribute classificationAttribute = new();
+
+            Unit unit = new();
+
+            bool attributeResult = false;
+            foreach (var item in classificationDto.ClassificationAttribute)
+            {
+                unit = _unitReadRepository.GetWhere(x => x.Code == item.Code).FirstOrDefault();
+                classificationAttribute.Unit = unit;
+                var classifications = new HashSet<Classification>();
+                classifications.Add(classification);
+                classificationAttribute.Code = Guid.NewGuid().ToString();
+                classificationAttribute.Classifications = classifications;
+                attributeResult = await _classificationAttributeWriteRepository.AddAsync(classificationAttribute);
+            }
+
+            if (!attributeResult)
             {
                 return BadRequest();
             }

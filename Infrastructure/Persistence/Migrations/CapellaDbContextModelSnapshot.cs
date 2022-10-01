@@ -52,6 +52,21 @@ namespace Persistence.Migrations
                     b.ToTable("ProductsCategories", (string)null);
                 });
 
+            modelBuilder.Entity("ClassificationClassificationAttribute", b =>
+                {
+                    b.Property<int>("ClassificationAttributesId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ClassificationsId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("ClassificationAttributesId", "ClassificationsId");
+
+                    b.HasIndex("ClassificationsId");
+
+                    b.ToTable("ClassificationClassificationAttribute", (string)null);
+                });
+
             modelBuilder.Entity("Domain.Entities.Category", b =>
                 {
                     b.Property<int>("Id")
@@ -104,12 +119,7 @@ namespace Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int?>("UnitId")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("UnitId");
 
                     b.ToTable("Classifications");
                 });
@@ -122,15 +132,14 @@ namespace Persistence.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("ClassificationId")
-                        .HasColumnType("integer");
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<int>("UnitId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ClassificationId");
 
                     b.HasIndex("UnitId");
 
@@ -147,6 +156,10 @@ namespace Persistence.Migrations
 
                     b.Property<int>("ClassificationAttributeId")
                         .HasColumnType("integer");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<int>("ProductId")
                         .HasColumnType("integer");
@@ -255,6 +268,21 @@ namespace Persistence.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("ClassificationClassificationAttribute", b =>
+                {
+                    b.HasOne("Domain.Entities.ClassificationAttribute", null)
+                        .WithMany()
+                        .HasForeignKey("ClassificationAttributesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.Classification", null)
+                        .WithMany()
+                        .HasForeignKey("ClassificationsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Domain.Entities.Category", b =>
                 {
                     b.HasOne("Domain.Entities.Category", "ParentCategory")
@@ -264,28 +292,13 @@ namespace Persistence.Migrations
                     b.Navigation("ParentCategory");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Classification", b =>
-                {
-                    b.HasOne("Domain.Entities.Unit", null)
-                        .WithMany("Classifications")
-                        .HasForeignKey("UnitId");
-                });
-
             modelBuilder.Entity("Domain.Entities.ClassificationAttribute", b =>
                 {
-                    b.HasOne("Domain.Entities.Classification", "Classification")
-                        .WithMany("ClassificationAttributes")
-                        .HasForeignKey("ClassificationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Domain.Entities.Unit", "Unit")
                         .WithMany()
                         .HasForeignKey("UnitId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Classification");
 
                     b.Navigation("Unit");
                 });
@@ -314,19 +327,9 @@ namespace Persistence.Migrations
                     b.Navigation("SubCategories");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Classification", b =>
-                {
-                    b.Navigation("ClassificationAttributes");
-                });
-
             modelBuilder.Entity("Domain.Entities.Product", b =>
                 {
                     b.Navigation("ClassificationAttributeValues");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Unit", b =>
-                {
-                    b.Navigation("Classifications");
                 });
 #pragma warning restore 612, 618
         }

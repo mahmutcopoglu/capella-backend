@@ -9,6 +9,6 @@ namespace Application.Repositories
 {
     public interface IClassificationAttributeWriteRepository : IWriteRepository<ClassificationAttribute>
     {
-
+ 
     }
 }

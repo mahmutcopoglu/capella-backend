@@ -46,8 +46,10 @@ namespace Persistence.Contexts
             modelBuilder
                 .Entity<Classification>()
                 .HasMany(classification => classification.ClassificationAttributes)
-                .WithOne(classificationAttribute => classificationAttribute.Classification);
-            
+                .WithMany(classificationAttribute => classificationAttribute.Classifications)
+                
+                .UsingEntity(j => j.ToTable("ClassificationClassificationAttribute"));
+
 
             modelBuilder
                 .Entity<Product>()
