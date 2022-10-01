@@ -6,7 +6,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Persistence.Migrations
 {
-    public partial class migal12 : Migration
+    public partial class newedit : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -135,11 +135,18 @@ namespace Persistence.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Code = table.Column<string>(type: "text", nullable: false),
-                    UnitId = table.Column<int>(type: "integer", nullable: false)
+                    UnitId = table.Column<int>(type: "integer", nullable: false),
+                    ClassificationId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ClassificationAttributes", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ClassificationAttributes_Classifications_ClassificationId",
+                        column: x => x.ClassificationId,
+                        principalTable: "Classifications",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_ClassificationAttributes_Units_UnitId",
                         column: x => x.UnitId,
@@ -177,24 +184,24 @@ namespace Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ClassificationClassificationAttribute",
+                name: "ClassificationClassificationAttributes",
                 columns: table => new
                 {
-                    ClassificationAttributesId = table.Column<int>(type: "integer", nullable: false),
-                    ClassificationsId = table.Column<int>(type: "integer", nullable: false)
+                    ClassificationAttributeId = table.Column<int>(type: "integer", nullable: false),
+                    ClassificationId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ClassificationClassificationAttribute", x => new { x.ClassificationAttributesId, x.ClassificationsId });
+                    table.PrimaryKey("PK_ClassificationClassificationAttributes", x => new { x.ClassificationId, x.ClassificationAttributeId });
                     table.ForeignKey(
-                        name: "FK_ClassificationClassificationAttribute_ClassificationAttribu~",
-                        column: x => x.ClassificationAttributesId,
+                        name: "FK_ClassificationClassificationAttributes_ClassificationAttrib~",
+                        column: x => x.ClassificationAttributeId,
                         principalTable: "ClassificationAttributes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ClassificationClassificationAttribute_Classifications_Class~",
-                        column: x => x.ClassificationsId,
+                        name: "FK_ClassificationClassificationAttributes_Classifications_Clas~",
+                        column: x => x.ClassificationId,
                         principalTable: "Classifications",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -209,6 +216,11 @@ namespace Persistence.Migrations
                 name: "IX_CategoriesClassifications_ClassificationsId",
                 table: "CategoriesClassifications",
                 column: "ClassificationsId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ClassificationAttributes_ClassificationId",
+                table: "ClassificationAttributes",
+                column: "ClassificationId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ClassificationAttributes_UnitId",
@@ -226,9 +238,9 @@ namespace Persistence.Migrations
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ClassificationClassificationAttribute_ClassificationsId",
-                table: "ClassificationClassificationAttribute",
-                column: "ClassificationsId");
+                name: "IX_ClassificationClassificationAttributes_ClassificationAttrib~",
+                table: "ClassificationClassificationAttributes",
+                column: "ClassificationAttributeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ProductsCategories_ProductsId",
@@ -251,7 +263,7 @@ namespace Persistence.Migrations
                 name: "ClassificationAttributeValues");
 
             migrationBuilder.DropTable(
-                name: "ClassificationClassificationAttribute");
+                name: "ClassificationClassificationAttributes");
 
             migrationBuilder.DropTable(
                 name: "ProductsCategories");
@@ -260,13 +272,13 @@ namespace Persistence.Migrations
                 name: "ClassificationAttributes");
 
             migrationBuilder.DropTable(
-                name: "Classifications");
-
-            migrationBuilder.DropTable(
                 name: "Categories");
 
             migrationBuilder.DropTable(
                 name: "Products");
+
+            migrationBuilder.DropTable(
+                name: "Classifications");
 
             migrationBuilder.DropTable(
                 name: "Units");

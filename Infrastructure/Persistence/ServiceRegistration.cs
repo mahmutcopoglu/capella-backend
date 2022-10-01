@@ -1,9 +1,11 @@
 ﻿using Application.Repositories;
 using Application.Repositories.ProductAbstract;
+using Application.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Persistence.Contexts;
 using Persistence.Repositories;
+using Persistence.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +18,11 @@ namespace Persistence
     {
         public static void AddPersistenceServices(this IServiceCollection services)
         {
+            #region Connection String
             services.AddDbContext<CapellaDbContext>(options => options.UseNpgsql(Configuration.ConnectionString));
+            #endregion
+
+            #region Repository Registration
             services.AddScoped<IProductWriteRepository, ProductWriteRepository>();
             services.AddScoped<IProductReadRepository, ProductReadRepository>();
             services.AddScoped<ICategoryWriteRepository, CategoryWriteRepository>();
@@ -28,7 +34,12 @@ namespace Persistence
             services.AddScoped<IClassificationAttributeReadRepository, ClassificationAttributeReadRepository>();
             services.AddScoped<IClassificationAttributeWriteRepository, ClassificationAttributeWriteRepository>();  
             services.AddScoped<IClassificationAttributeValueReadRepository, ClassificationAttributeValueReadRepository>();  
-            services.AddScoped<IClassificationAttributeValueWriteRepository, ClassificationAttributeValueWriteRepository>();    
+            services.AddScoped<IClassificationAttributeValueWriteRepository, ClassificationAttributeValueWriteRepository>();
+            #endregion
+
+            #region Service Registration
+            services.AddScoped<IClassificationService, ClassificationService>();
+            #endregion
         }
     }
 }

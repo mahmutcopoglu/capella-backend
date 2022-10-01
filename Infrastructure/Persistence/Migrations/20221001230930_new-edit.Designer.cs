@@ -12,8 +12,8 @@ using Persistence.Contexts;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(CapellaDbContext))]
-    [Migration("20221001005226_migal12")]
-    partial class migal12
+    [Migration("20221001230930_new-edit")]
+    partial class newedit
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -52,21 +52,6 @@ namespace Persistence.Migrations
                     b.HasIndex("ProductsId");
 
                     b.ToTable("ProductsCategories", (string)null);
-                });
-
-            modelBuilder.Entity("ClassificationClassificationAttribute", b =>
-                {
-                    b.Property<int>("ClassificationAttributesId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("ClassificationsId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("ClassificationAttributesId", "ClassificationsId");
-
-                    b.HasIndex("ClassificationsId");
-
-                    b.ToTable("ClassificationClassificationAttribute", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.Category", b =>
@@ -134,6 +119,9 @@ namespace Persistence.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("ClassificationId")
+                        .HasColumnType("integer");
+
                     b.Property<string>("Code")
                         .IsRequired()
                         .HasColumnType("text");
@@ -142,6 +130,8 @@ namespace Persistence.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ClassificationId");
 
                     b.HasIndex("UnitId");
 
@@ -177,6 +167,21 @@ namespace Persistence.Migrations
                     b.HasIndex("ProductId");
 
                     b.ToTable("ClassificationAttributeValues");
+                });
+
+            modelBuilder.Entity("Domain.Entities.ClassificationClassificationAttributes", b =>
+                {
+                    b.Property<int>("ClassificationId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ClassificationAttributeId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("ClassificationId", "ClassificationAttributeId");
+
+                    b.HasIndex("ClassificationAttributeId");
+
+                    b.ToTable("ClassificationClassificationAttributes");
                 });
 
             modelBuilder.Entity("Domain.Entities.Product", b =>
@@ -270,21 +275,6 @@ namespace Persistence.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("ClassificationClassificationAttribute", b =>
-                {
-                    b.HasOne("Domain.Entities.ClassificationAttribute", null)
-                        .WithMany()
-                        .HasForeignKey("ClassificationAttributesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Entities.Classification", null)
-                        .WithMany()
-                        .HasForeignKey("ClassificationsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Domain.Entities.Category", b =>
                 {
                     b.HasOne("Domain.Entities.Category", "ParentCategory")
@@ -296,11 +286,19 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.Entities.ClassificationAttribute", b =>
                 {
+                    b.HasOne("Domain.Entities.Classification", "Classification")
+                        .WithMany("ClassificationAttributes")
+                        .HasForeignKey("ClassificationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Domain.Entities.Unit", "Unit")
                         .WithMany()
                         .HasForeignKey("UnitId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Classification");
 
                     b.Navigation("Unit");
                 });
@@ -324,9 +322,40 @@ namespace Persistence.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("Domain.Entities.ClassificationClassificationAttributes", b =>
+                {
+                    b.HasOne("Domain.Entities.ClassificationAttribute", "ClassificationAttribute")
+                        .WithMany("Classifications")
+                        .HasForeignKey("ClassificationAttributeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.Classification", "Classification")
+                        .WithMany("ClassificationClassificationAttributes")
+                        .HasForeignKey("ClassificationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Classification");
+
+                    b.Navigation("ClassificationAttribute");
+                });
+
             modelBuilder.Entity("Domain.Entities.Category", b =>
                 {
                     b.Navigation("SubCategories");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Classification", b =>
+                {
+                    b.Navigation("ClassificationAttributes");
+
+                    b.Navigation("ClassificationClassificationAttributes");
+                });
+
+            modelBuilder.Entity("Domain.Entities.ClassificationAttribute", b =>
+                {
+                    b.Navigation("Classifications");
                 });
 
             modelBuilder.Entity("Domain.Entities.Product", b =>

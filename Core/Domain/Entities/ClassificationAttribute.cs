@@ -11,6 +11,7 @@ namespace Domain.Entities
     {
         public string Code { get; set; }
         public Unit Unit { get; set; }
-        public ICollection<Classification> Classifications { get; set; }
+        public Classification Classification { get; set; }
+        public ICollection<ClassificationClassificationAttributes> Classifications { get; set; }
     }
 }
