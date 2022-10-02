@@ -12,6 +12,6 @@ namespace Application.Services
     {
         Task<bool> saveClassification(ClassificationDto classificationDto);
 
-        Task saveClassificationAttribute(Classification classification, Unit unit);
+        Task<bool> saveClassificationAttribute(Classification classification, Unit unit);
     }
 }

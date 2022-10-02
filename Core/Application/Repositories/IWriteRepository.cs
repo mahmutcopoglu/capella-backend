@@ -1,4 +1,5 @@
 ﻿using Domain.Entities.Common;
+using Microsoft.EntityFrameworkCore.Storage;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,8 +17,8 @@ namespace Application.Repositories
         bool RemoveRange(List<T> datas);
         Task<bool> RemoveAsync(int id);
         bool Update(T model);
+        Task<IDbContextTransaction> DbTransactional();
 
-        
-        
+
     }
 }

@@ -19,8 +19,6 @@ namespace Persistence.Contexts
         public DbSet<Classification> Classifications { get; set; }
         public DbSet<Unit> Units { get; set; }
         public DbSet<ClassificationAttribute> ClassificationAttributes { get; set; }
-
-        public DbSet<ClassificationClassificationAttributes> ClassificationClassificationAttributes { get; set; }
         public DbSet<ClassificationAttributeValue> ClassificationAttributeValues { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -42,22 +40,10 @@ namespace Persistence.Contexts
                 .UsingEntity(j => j.ToTable("CategoriesClassifications"));
 
             modelBuilder
-                .Entity<Unit>()
-                .HasIndex(u => u.Code).IsUnique();
-
-            modelBuilder.Entity<ClassificationClassificationAttributes>()
-                 .HasKey(cCa => new { cCa.ClassificationId, cCa.ClassificationAttributeId });
-
-            modelBuilder.Entity<ClassificationClassificationAttributes>()
-                .HasOne(classificationClassificationAttributes => classificationClassificationAttributes.Classification)
-                .WithMany(classification => classification.ClassificationClassificationAttributes)
-                .HasForeignKey(cCa => cCa.ClassificationId);
-
-            modelBuilder.Entity<ClassificationClassificationAttributes>()
-                .HasOne(classificationClassificationAttributes => classificationClassificationAttributes.ClassificationAttribute)
-                .WithMany(classificationAttribute => classificationAttribute.Classifications)
-                .HasForeignKey(cCa => cCa.ClassificationAttributeId);
-
+                .Entity<Classification>()
+                .HasMany(p => p.ClassificationAttributes)
+                .WithMany(p => p.Classifications)
+                .UsingEntity(j => j.ToTable("ClassificationClassificationAttributes"));
 
             modelBuilder
                 .Entity<Product>()

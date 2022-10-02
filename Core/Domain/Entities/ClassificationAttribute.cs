@@ -9,9 +9,12 @@ namespace Domain.Entities
 {
     public class ClassificationAttribute : BaseEntity
     {
+        public ClassificationAttribute()
+        {
+            Classifications = new List<Classification>();
+        }
         public string Code { get; set; }
         public Unit Unit { get; set; }
-        public Classification Classification { get; set; }
-        public ICollection<ClassificationClassificationAttributes> Classifications { get; set; }
+        public ICollection<Classification> Classifications { get; set; }
     }
 }

@@ -2,6 +2,7 @@
 using Domain.Entities.Common;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.Storage;
 using Persistence.Contexts;
 using System;
 using System.Collections.Generic;
@@ -55,6 +56,11 @@ namespace Persistence.Repositories
         {
             EntityEntry<T> entityEntry = Table.Update(model);
             return entityEntry.State == EntityState.Modified;
+        }
+
+        public Task<IDbContextTransaction> DbTransactional()
+        {
+            return _context.Database.BeginTransactionAsync();
         }
 
         
