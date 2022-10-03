@@ -38,6 +38,23 @@ namespace API.Controllers
 
         }
 
+        [HttpPost("/classification-attribute-value")]
+        public async Task<IActionResult> AddClassificationAttributeValue([FromBody] ClassificationAttributeValueDto classificationAttributeValueDto)
+        {
+
+            var result = await _classificationService.saveClassificationAttributeValue(classificationAttributeValueDto);
+
+            if (!result)
+            {
+                return BadRequest();
+            }
+            else
+            {
+                return Ok(true);
+            }
+
+        }
+
         //[HttpGet("/classification")]
         //public async Task<IActionResult> ClassificationList()
         //{

@@ -1,5 +1,6 @@
 ﻿using Application.DataTransferObject;
 using Application.Repositories;
+using Application.Repositories.ProductAbstract;
 using Application.Services;
 using Domain.Entities;
 using System;
@@ -14,18 +15,24 @@ namespace Persistence.Services
     {
         private readonly IClassificationReadRepository _classificationReadRepository;
         private readonly IClassificationWriteRepository _classificationWriteRepository;
+        private readonly IClassificationAttributeReadRepository _classificationAttributeReadRepository;
         private readonly IClassificationAttributeWriteRepository _classificationAttributeWriteRepository;
+        private readonly IClassificationAttributeValueWriteRepository _classificationAttributeValueWriteRepository;
         private readonly ICategoryReadRepository _categoryReadRepository;
+        private readonly IProductReadRepository _productReadRepository;
         private readonly IUnitReadRepository _unitReadRepository;
 
         public ClassificationService(IClassificationReadRepository classificationReadRepository, IClassificationWriteRepository classificationWriteRepository,
-            IClassificationAttributeWriteRepository classificationAttributeWriteRepository, ICategoryReadRepository categoryReadRepository,
-            IUnitReadRepository unitReadRepository)
+            IClassificationAttributeWriteRepository classificationAttributeWriteRepository, ICategoryReadRepository categoryReadRepository,IClassificationAttributeReadRepository classificationAttributeReadRepository,
+            IUnitReadRepository unitReadRepository, IProductReadRepository productReadRepository, IClassificationAttributeValueWriteRepository classificationAttributeValueWriteRepository)
         {
             _classificationReadRepository = classificationReadRepository;
             _classificationWriteRepository = classificationWriteRepository;
+            _classificationAttributeReadRepository = classificationAttributeReadRepository;
             _classificationAttributeWriteRepository = classificationAttributeWriteRepository;
+            _classificationAttributeValueWriteRepository = classificationAttributeValueWriteRepository;
             _categoryReadRepository = categoryReadRepository;
+            _productReadRepository = productReadRepository;
             _unitReadRepository = unitReadRepository;
         }
         public async Task<bool> saveClassification(ClassificationDto classificationDto)
@@ -82,6 +89,20 @@ namespace Persistence.Services
             classificationAttribute.Unit = unit;
             classificationAttribute.Classifications.Add(classification);
             return await _classificationAttributeWriteRepository.AddAsync(classificationAttribute);
+        }
+
+        public async Task<bool> saveClassificationAttributeValue(ClassificationAttributeValueDto classificationAttributeValueDto)
+        {
+            ClassificationAttributeValue classificationAttributeValue = new();
+            var classificationAttributeCode = classificationAttributeValueDto.ClassificationAttribute.Code;
+            ClassificationAttribute classificationAttribute = new();
+            classificationAttribute = _classificationAttributeReadRepository.GetWhere(x => x.Code == classificationAttributeCode).FirstOrDefault();
+            classificationAttributeValue.ClassificationAttribute = classificationAttribute;
+            Product product = new();
+            var productCode = classificationAttributeValueDto.ProductCode;
+            product = _productReadRepository.GetWhere(x => x.Code == productCode).FirstOrDefault();
+            classificationAttributeValue.Products.Add(product);
+            return await _classificationAttributeValueWriteRepository.AddAsync(classificationAttributeValue);
         }
     }
 }

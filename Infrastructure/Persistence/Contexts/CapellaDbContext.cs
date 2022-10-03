@@ -23,12 +23,14 @@ namespace Persistence.Contexts
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Category>()
+            modelBuilder
+                .Entity<Category>()
                 .HasOne(category => category.ParentCategory)
                 .WithMany(category => category.SubCategories)
                 .HasForeignKey(category => category.ParentCategoryId);
 
-            modelBuilder.Entity<Product>()
+            modelBuilder
+                .Entity<Product>()
                 .HasMany(product=> product.Categories)
                 .WithMany(category => category.Products)
                 .UsingEntity(j => j.ToTable("ProductsCategories"));
@@ -48,10 +50,12 @@ namespace Persistence.Contexts
             modelBuilder
                 .Entity<Product>()
                 .HasMany(product => product.ClassificationAttributeValues)
-                .WithOne(classificationAttributeValue => classificationAttributeValue.Product);
+                .WithMany(classificationAttributeValues => classificationAttributeValues.Products)
+                .UsingEntity(j => j.ToTable("ProductClassificationAttributeValues"));
 
 
-            
+
+
         }
     }
 }
