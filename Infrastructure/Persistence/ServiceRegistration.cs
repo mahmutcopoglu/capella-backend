@@ -1,11 +1,13 @@
 ﻿using Application.Repositories;
 using Application.Repositories.ProductAbstract;
 using Application.Services;
+using Application.Services.Media;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Persistence.Contexts;
 using Persistence.Repositories;
 using Persistence.Services;
+using Persistence.Services.Media;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,10 +37,13 @@ namespace Persistence
             services.AddScoped<IClassificationAttributeWriteRepository, ClassificationAttributeWriteRepository>();  
             services.AddScoped<IClassificationAttributeValueReadRepository, ClassificationAttributeValueReadRepository>();  
             services.AddScoped<IClassificationAttributeValueWriteRepository, ClassificationAttributeValueWriteRepository>();
+            services.AddScoped<IMediaWriteRepository, MediaWriteRepository>();
+            services.AddScoped<IMediaReadRepository, MediaReadRepository>();
             #endregion
 
             #region Service Registration
             services.AddScoped<IClassificationService, ClassificationService>();
+            services.AddScoped<IMediaService, MediaService>();
             #endregion
         }
     }
