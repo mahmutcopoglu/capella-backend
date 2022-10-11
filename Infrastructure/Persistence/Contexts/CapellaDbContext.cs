@@ -20,6 +20,7 @@ namespace Persistence.Contexts
         public DbSet<Unit> Units { get; set; }
         public DbSet<ClassificationAttribute> ClassificationAttributes { get; set; }
         public DbSet<ClassificationAttributeValue> ClassificationAttributeValues { get; set; }
+        public DbSet<Media> Medias { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

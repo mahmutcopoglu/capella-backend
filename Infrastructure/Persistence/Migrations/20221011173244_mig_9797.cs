@@ -6,7 +6,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Persistence.Migrations
 {
-    public partial class mig31_v1 : Migration
+    public partial class mig_9797 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -45,6 +45,30 @@ namespace Persistence.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Classifications", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Medias",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Code = table.Column<string>(type: "text", nullable: false),
+                    RealFilename = table.Column<string>(type: "text", nullable: false),
+                    EncodedFilename = table.Column<string>(type: "text", nullable: false),
+                    FilePath = table.Column<string>(type: "text", nullable: false),
+                    RootPath = table.Column<string>(type: "text", nullable: false),
+                    ServePath = table.Column<string>(type: "text", nullable: false),
+                    AbsolutePath = table.Column<string>(type: "text", nullable: false),
+                    Mime = table.Column<string>(type: "text", nullable: false),
+                    Extension = table.Column<string>(type: "text", nullable: false),
+                    Size = table.Column<long>(type: "bigint", nullable: false),
+                    Secure = table.Column<bool>(type: "boolean", nullable: false),
+                    Deleted = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Medias", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -156,7 +180,6 @@ namespace Persistence.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Code = table.Column<string>(type: "text", nullable: false),
                     Value = table.Column<string>(type: "text", nullable: false),
-                    ProductId = table.Column<int>(type: "integer", nullable: false),
                     ClassificationAttributeId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
@@ -166,12 +189,6 @@ namespace Persistence.Migrations
                         name: "FK_ClassificationAttributeValues_ClassificationAttributes_Clas~",
                         column: x => x.ClassificationAttributeId,
                         principalTable: "ClassificationAttributes",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_ClassificationAttributeValues_Products_ProductId",
-                        column: x => x.ProductId,
-                        principalTable: "Products",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -200,6 +217,30 @@ namespace Persistence.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "ProductClassificationAttributeValues",
+                columns: table => new
+                {
+                    ClassificationAttributeValuesId = table.Column<int>(type: "integer", nullable: false),
+                    ProductsId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProductClassificationAttributeValues", x => new { x.ClassificationAttributeValuesId, x.ProductsId });
+                    table.ForeignKey(
+                        name: "FK_ProductClassificationAttributeValues_ClassificationAttribut~",
+                        column: x => x.ClassificationAttributeValuesId,
+                        principalTable: "ClassificationAttributeValues",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ProductClassificationAttributeValues_Products_ProductsId",
+                        column: x => x.ProductsId,
+                        principalTable: "Products",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Categories_ParentCategoryId",
                 table: "Categories",
@@ -221,14 +262,14 @@ namespace Persistence.Migrations
                 column: "ClassificationAttributeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ClassificationAttributeValues_ProductId",
-                table: "ClassificationAttributeValues",
-                column: "ProductId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_ClassificationClassificationAttributes_ClassificationsId",
                 table: "ClassificationClassificationAttributes",
                 column: "ClassificationsId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProductClassificationAttributeValues_ProductsId",
+                table: "ProductClassificationAttributeValues",
+                column: "ProductsId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ProductsCategories_ProductsId",
@@ -242,25 +283,31 @@ namespace Persistence.Migrations
                 name: "CategoriesClassifications");
 
             migrationBuilder.DropTable(
-                name: "ClassificationAttributeValues");
+                name: "ClassificationClassificationAttributes");
 
             migrationBuilder.DropTable(
-                name: "ClassificationClassificationAttributes");
+                name: "Medias");
+
+            migrationBuilder.DropTable(
+                name: "ProductClassificationAttributeValues");
 
             migrationBuilder.DropTable(
                 name: "ProductsCategories");
 
             migrationBuilder.DropTable(
-                name: "ClassificationAttributes");
+                name: "Classifications");
 
             migrationBuilder.DropTable(
-                name: "Classifications");
+                name: "ClassificationAttributeValues");
 
             migrationBuilder.DropTable(
                 name: "Categories");
 
             migrationBuilder.DropTable(
                 name: "Products");
+
+            migrationBuilder.DropTable(
+                name: "ClassificationAttributes");
 
             migrationBuilder.DropTable(
                 name: "Units");

@@ -1,13 +1,11 @@
 ﻿using Application.Repositories;
 using Application.Repositories.ProductAbstract;
 using Application.Services;
-using Application.Services.Media;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Persistence.Contexts;
 using Persistence.Repositories;
 using Persistence.Services;
-using Persistence.Services.Media;
 using System;
 using System.Collections.Generic;
 using System.Linq;

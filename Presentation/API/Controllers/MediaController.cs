@@ -1,4 +1,4 @@
-﻿using Application.Services.Media;
+﻿using Application.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,6 +13,14 @@ namespace API.Controllers
         public MediaController(IMediaService mediaService)
         {
             _mediaService = mediaService;
+        }
+
+        [HttpPost("/media")]
+        public async Task<IActionResult> AddMedia(IFormFile formFile)
+        {
+            var result =  await _mediaService.storage(formFile, true);
+            return Ok(result);
+
         }
     }
 }
