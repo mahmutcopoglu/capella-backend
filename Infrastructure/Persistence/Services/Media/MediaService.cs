@@ -31,10 +31,14 @@ namespace Persistence.Services
                 var isSecure = secure ? _config["MediaStorage:SecurePath"] : _config["MediaStorage:PublicPath"];
                 var filePath = $"{isSecure}capella/{todayDate}/{todayTime}";
                 var fullPath = $"{rootPath}/{filePath}";
-               
-                Directory.CreateDirectory(fullPath);
+              
                 var fileNameHash = "asdasdasdas";
-                
+                Directory.CreateDirectory(fullPath);
+                using (var stream = new FileStream(Path.Combine(fullPath, formFile.FileName), FileMode.Create))
+                {
+                    await formFile.CopyToAsync(stream);
+                }
+
                 Media media = new();
                 media.RealFilename = formFile.FileName;
                 media.EncodedFilename = fileNameHash;
