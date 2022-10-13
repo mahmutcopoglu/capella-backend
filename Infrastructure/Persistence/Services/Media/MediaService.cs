@@ -10,10 +10,15 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace Persistence.Services
 {
+
     public class MediaService : IMediaService
     {
+        Random random = new Random();
+        const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
         private readonly IConfiguration _config;
         private readonly IMediaWriteRepository _mediaWriteRepository;
         public MediaService(IConfiguration config, IMediaWriteRepository mediaWriteRepository)
@@ -22,7 +27,8 @@ namespace Persistence.Services
             _mediaWriteRepository = mediaWriteRepository;
         }
         public async Task<Media> storage(IFormFile formFile, bool secure)
-        {
+        { 
+            
             try
             {
                 var todayDate = DateTime.Now.ToString("yyyyMMdd");
@@ -30,9 +36,9 @@ namespace Persistence.Services
                 var rootPath = _config["MediaStorage:FileRootPath"];
                 var isSecure = secure ? _config["MediaStorage:SecurePath"] : _config["MediaStorage:PublicPath"];
                 var filePath = $"{isSecure}capella/{todayDate}/{todayTime}";
-                var fullPath = $"{rootPath}/{filePath}";
-              
-                var fileNameHash = "asdasdasdas";
+                var fullPath = $"{rootPath}/{filePath}";        
+                var filenamehash =  new string(Enumerable.Repeat(chars, 20).Select(s => s[random.Next(s.Length)]).ToArray());
+
                 Directory.CreateDirectory(fullPath);
                 using (var stream = new FileStream(Path.Combine(fullPath, formFile.FileName), FileMode.Create))
                 {
@@ -41,14 +47,14 @@ namespace Persistence.Services
 
                 Media media = new();
                 media.RealFilename = formFile.FileName;
-                media.EncodedFilename = fileNameHash;
+                media.EncodedFilename = filenamehash;
                 media.Extension = Path.GetExtension(formFile.FileName);
                 media.FilePath = filePath;
                 media.RootPath = rootPath;
                 media.Size = formFile.Length;
                 media.Mime = formFile.ContentType;
                 media.Secure = secure;
-                var absolutePath = $"{filePath}/{fileNameHash}{Path.GetExtension(formFile.FileName)}";
+                var absolutePath = $"{filePath}/{filenamehash}{Path.GetExtension(formFile.FileName)}";
                 media.AbsolutePath = absolutePath;
                 media.ServePath = absolutePath;
                 media.Code = Guid.NewGuid().ToString();

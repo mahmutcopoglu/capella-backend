@@ -1,6 +1,9 @@
 ﻿using Application.Repositories;
 using Application.Repositories.ProductAbstract;
 using Application.Services;
+using Application.Services;
+using Application.Services;
+using Application.Services.Unit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Persistence.Contexts;
@@ -42,6 +45,9 @@ namespace Persistence
             #region Service Registration
             services.AddScoped<IClassificationService, ClassificationService>();
             services.AddScoped<IMediaService, MediaService>();
+            services.AddScoped<IUnitService, UnitService>();
+            services.AddScoped<IProductService, ProductService>();
+            services.AddScoped<ICategoryService, CategoryService>();
             #endregion
         }
     }

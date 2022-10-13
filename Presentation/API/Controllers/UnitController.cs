@@ -1,6 +1,7 @@
 ﻿using Application.DataTransferObject;
 using Application.Repositories;
 using Application.Repositories.ProductAbstract;
+using Application.Services.Unit;
 using AutoMapper;
 using Domain.Entities;
 using Microsoft.AspNetCore.Http;
@@ -13,31 +14,27 @@ namespace API.Controllers
     [ApiController]
     public class UnitController : ControllerBase
     {
-        private readonly IUnitReadRepository _unitReadRepository;
-        private readonly IUnitWriteRepository _unitWriteRepository;
-        private readonly IMapper _mapper;
+        private readonly IUnitService _unitService;
+       
 
-        public UnitController(IUnitReadRepository unitReadRepository, IUnitWriteRepository unitWriteRepository, IMapper mapper)
+        public UnitController(IUnitService unitService)
         {
-            _unitReadRepository = unitReadRepository;
-            _unitWriteRepository = unitWriteRepository;
-            _mapper = mapper;
+            _unitService = unitService;   
         }
 
         [HttpPost("/unit")]
         public async Task<IActionResult> AddUnit([FromBody] UnitDto unitDto)
         {
-            var unit = _mapper.Map<Unit>(unitDto);
-            var result = await _unitWriteRepository.AddAsync(unit);
+
+            var result =await _unitService.saveUnit(unitDto);
             if (!result)
             {
                 return BadRequest();
             }
             else
             {
-                return Ok(unit);
+                return Ok(true);
             }
-
         }
     }
 }

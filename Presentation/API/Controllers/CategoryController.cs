@@ -1,5 +1,6 @@
 ﻿using Application.DataTransferObject;
 using Application.Repositories;
+using Application.Services;
 using AutoMapper;
 using Domain.Entities;
 using Microsoft.AspNetCore.Http;
@@ -12,31 +13,26 @@ namespace API.Controllers
     [ApiController]
     public class CategoryController : ControllerBase
     {
-        private readonly ICategoryWriteRepository _categoryWriteRepository;
-        private readonly ICategoryReadRepository _categoryReadRepository;
-        private readonly IMapper _mapper;
+        private readonly ICategoryService _categoryService;
+       
 
-        public CategoryController(ICategoryReadRepository categoryReadRepository, ICategoryWriteRepository categoryWriteRepository, IMapper mapper)
+        public CategoryController(ICategoryService categoryService)
         {
-            _categoryReadRepository = categoryReadRepository;
-            _categoryWriteRepository = categoryWriteRepository;
-            _mapper = mapper;
+            _categoryService = categoryService;
 
         }
       
         [HttpPost("/category")]
         public async Task<IActionResult> AddCategory([FromBody] CategoryDto categoryDto)
         {
-            var category = _mapper.Map<Category>(categoryDto);
-            category.Code = Guid.NewGuid().ToString();
-            var result = await _categoryWriteRepository.AddAsync(category);
+            var result = await _categoryService.saveCategory(categoryDto);
             if (!result)
             {
                 return BadRequest();
             }
             else
             {
-                return Ok(category);
+                return Ok(true);
             }
         }
         
@@ -44,15 +40,15 @@ namespace API.Controllers
         [HttpGet("/category/{id}")]
         public async Task<IActionResult> GetCategoryById(int id)
         {
-            var category = await _categoryReadRepository.GetWhereWithInclude(x=>x.Id==id,true,x=>x.SubCategories,x=>x.ParentCategory).FirstOrDefaultAsync();
+            var category = await _categoryService.getCategoryById(id);
             return Ok(category);
         }
 
         [HttpGet("/categories")]
         public async Task<IActionResult> CategoryList()
         {
-            List<Category> categories = await _categoryReadRepository.GetAllWithInclude(true, x => x.SubCategories, x => x.ParentCategory).ToListAsync();
-            return Ok(categories);
+            var result = await _categoryService.categoryList();
+            return Ok(result);
         }
 
     }

@@ -1,5 +1,6 @@
 ﻿using Application.DataTransferObject;
 using Application.Repositories.ProductAbstract;
+using Application.Services;
 using AutoMapper;
 using Domain.Entities;
 using Microsoft.AspNetCore.Http;
@@ -12,29 +13,24 @@ namespace API.Controllers
     [ApiController]
     public class ProductController : ControllerBase
     {
-        private readonly IProductWriteRepository _productWriteRepository;
-        private readonly IProductReadRepository _productReadRepository;
-        private readonly IMapper _mapper;
+        private readonly IProductService _productService;
+       
 
-        public ProductController(IProductWriteRepository productWriteRepository, IProductReadRepository productReadRepository,IMapper mapper)
+        public ProductController(IProductService productService)
         {
-            _productReadRepository = productReadRepository;
-            _productWriteRepository = productWriteRepository;
-            _mapper = mapper;
+            _productService = productService;
         }
 
         [HttpPost("/product")]
         public async Task<IActionResult> AddProduct([FromBody] ProductDto productDto)
         {
-            var product = _mapper.Map<Product>(productDto);
-            product.Code = Guid.NewGuid().ToString();
-            var result = await _productWriteRepository.AddAsync(product);
+            var result = await _productService.saveProduct(productDto);
             if (!result)
             {
                 return BadRequest();
             }else
             {
-                return Ok(product);
+                return Ok(true);
             }
             
         }
@@ -42,15 +38,15 @@ namespace API.Controllers
         [HttpGet("/products")]
         public async Task<IActionResult> ProductList()
         {
-            List<Product> products = await _productReadRepository.GetAll().ToListAsync();
+            List<Product> products = await _productService.productList();
             return Ok(products);
         }
 
         [HttpGet("{productId}")]
         public async Task<IActionResult> GetProductById(int productId)
         {
-           var product = await _productReadRepository.GetByIdAsync(productId);
-           return Ok(product);
+            var product = await _productService.getProductById(productId);
+            return Ok(product);
            
         }
     }
