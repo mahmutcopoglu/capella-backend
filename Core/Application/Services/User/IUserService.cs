@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Application.DataTransferObject;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +9,6 @@ namespace Application.Services.User
 {
     public interface IUserService
     {
+        Task<bool> save(UserDto userDto);
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Application.DataTransferObject;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,6 @@ namespace Application.Services.Role
 {
     public interface IRoleService
     {
-
+        Task<bool> save(RoleDto roleDto);
     }
 }

@@ -39,6 +39,26 @@ namespace Application.Mapping
             CreateMap<Unit, UnitDto>().ReverseMap();
 
             #endregion
+
+            #region User Mapper
+
+            CreateMap<User, UserDto>().ReverseMap();
+
+            #endregion
+
+            #region Role Mapper
+
+            CreateMap<Role, RoleDto>().ReverseMap();
+
+            #endregion
+
+            #region Address Mapper
+
+            CreateMap<Address, AddressDto>().ReverseMap();
+
+            #endregion
+
+
         }
     }
 }
