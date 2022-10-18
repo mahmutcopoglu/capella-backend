@@ -13,19 +13,28 @@ namespace Persistence.Services
 {
     public class RoleService : IRoleService
     {
-        private readonly IRoleReadRepository _readRepository;
+        private readonly IRoleReadRepository _roleReadRepository;
         private readonly IRoleWriteRepository _roleWriteRepository;
-        private readonly IMapper _mapper;
-        public RoleService(IRoleReadRepository readRepository, IRoleWriteRepository roleWriteRepository, IMapper mapper)
+        private readonly IPermissionReadRepository _permissionReadRepository;
+        public RoleService(IRoleReadRepository roleReadRepository, IRoleWriteRepository roleWriteRepository, IPermissionReadRepository permissionReadRepository)
         {
-            _readRepository = readRepository;
+            _roleReadRepository = roleReadRepository;
             _roleWriteRepository = roleWriteRepository;
-            _mapper = mapper;
+            _permissionReadRepository = permissionReadRepository;
         }
     
         public async Task<bool> save(RoleDto roleDto)
         {
-            var role = _mapper.Map<Role>(roleDto);
+            Role role = new();
+            role.Name = roleDto.Name;
+            role.IsActive = roleDto.IsActive;
+            var permissions = new HashSet<Domain.Entities.Permission>();
+            foreach (var item in roleDto.Permissions)
+            {
+                var permission = _permissionReadRepository.GetWhere(x => x.Code == item.Code).FirstOrDefault();
+                permissions.Add(permission);
+            }
+            role.Permissions = permissions;
             var result = await _roleWriteRepository.AddAsync(role);
             return result;
         }

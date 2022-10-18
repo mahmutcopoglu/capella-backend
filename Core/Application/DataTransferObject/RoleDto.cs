@@ -11,6 +11,7 @@ namespace Application.DataTransferObject
     {
         public string Name { get; set; }
         public bool IsActive { get; set; }
-  
+        public ICollection<Permission> Permissions { get; set; }
+
     }
 }

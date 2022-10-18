@@ -4,14 +4,15 @@ using Application.Services;
 using Application.Services.Address;
 using Application.Services.Permission;
 using Application.Services.Role;
+using Application.Services.Token;
 using Application.Services.Unit;
-using Application.Services.User;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Persistence.Contexts;
 using Persistence.Repositories;
 using Persistence.Services;
 using Persistence.Services.Permission;
+using Persistence.Services.Token;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -63,6 +64,7 @@ namespace Persistence
             services.AddScoped<IRoleService, RoleService>();
             services.AddScoped<IAddressService, AddressService>();
             services.AddScoped<IPermissionService, PermissionService>();
+            services.AddScoped<ITokenService, TokenService>();
             #endregion
         }
     }

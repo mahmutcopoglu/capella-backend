@@ -15,19 +15,26 @@ namespace Persistence.Services
     {
         private readonly IAddressReadRepository _addressReadRepository;
         private readonly IAddressWriteRepository _addressWriteRepository;
-        private readonly IMapper _mapper;
+        private readonly IUserReadRepository _userReadRepository;
 
-        public AddressService(IAddressReadRepository addressReadRepository, IAddressWriteRepository addressWriteRepository, IMapper mapper)
+        public AddressService(IAddressReadRepository addressReadRepository, IAddressWriteRepository addressWriteRepository, IUserReadRepository userReadRepository)
         {
             _addressReadRepository = addressReadRepository;
             _addressWriteRepository = addressWriteRepository;
-            _mapper = mapper;
+            _userReadRepository = userReadRepository;
         }
-    
-
         public async Task<bool> save(AddressDto addressDto)
         {
-            var address = _mapper.Map<Address>(addressDto);
+            Address address = new();
+            address.Name = addressDto.Name;
+            address.Firstname = addressDto.Firstname;
+            address.Lastname = addressDto.Lastname;
+            address.PhoneNumber = addressDto.PhoneNumber;
+            address.City = addressDto.City;
+            address.District = addressDto.District;
+            address.Neighbourhood = addressDto.Neighbourhood;
+            address.FullAddress = addressDto.FullAddress;
+            address.User = _userReadRepository.GetWhere(u=> u.Username == addressDto.UserDto.Username).FirstOrDefault();
             var result = await _addressWriteRepository.AddAsync(address);   
             return result;  
         }

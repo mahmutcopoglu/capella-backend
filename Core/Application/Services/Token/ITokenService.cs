@@ -6,12 +6,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.Services
+namespace Application.Services.Token
 {
-    public interface IUserService
+    public interface ITokenService
     {
-        Task<bool> save(UserDto userDto);
-
-        Task<User> loadByUser(LoginDto loginDto);
+        Task<JWTToken> generateToken(User user);
     }
 }

@@ -1,6 +1,5 @@
 ﻿using Application.DataTransferObject;
 using Application.Services.Address;
-using Application.Services.User;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 

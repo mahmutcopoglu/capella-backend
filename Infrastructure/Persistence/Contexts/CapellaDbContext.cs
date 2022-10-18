@@ -66,7 +66,8 @@ namespace Persistence.Contexts
             modelBuilder
                .Entity<User>()
                .HasMany(user => user.Roles)
-               .WithOne(role => role.User);
+               .WithMany(role => role.Users)
+               .UsingEntity(j => j.ToTable("UserRoles"));
 
             modelBuilder
                 .Entity<Role>()
