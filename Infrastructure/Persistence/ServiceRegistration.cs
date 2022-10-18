@@ -3,12 +3,20 @@ using Application.Repositories.ProductAbstract;
 using Application.Services;
 using Application.Services;
 using Application.Services;
+using Application.Services.Address;
+using Application.Services.Permission;
+using Application.Services.Role;
 using Application.Services.Unit;
+using Application.Services.User;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Persistence.Contexts;
 using Persistence.Repositories;
 using Persistence.Services;
+using Persistence.Services.Address;
+using Persistence.Services.Permission;
+using Persistence.Services.Role;
+using Persistence.Services.User;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,6 +48,14 @@ namespace Persistence
             services.AddScoped<IClassificationAttributeValueWriteRepository, ClassificationAttributeValueWriteRepository>();
             services.AddScoped<IMediaWriteRepository, MediaWriteRepository>();
             services.AddScoped<IMediaReadRepository, MediaReadRepository>();
+            services.AddScoped<IUserReadRepository, UserReadRepository>();
+            services.AddScoped<IUserWriteRepository, UserWriteRepository>();    
+            services.AddScoped<IAddressReadRepository, AddressReadRepository>();    
+            services.AddScoped<IAddressWriteRepository, AddressWriteRepository>();  
+            services.AddScoped<IRoleReadRepository, RoleReadRepository>();  
+            services.AddScoped<IRoleWriteRepository, RoleWriteRepository>();    
+            services.AddScoped<IPermissionReadRepository, PermissionReadRepository>();
+            services.AddScoped<IPermissionWriteRepository, PermissionWriteRepository>();
             #endregion
 
             #region Service Registration
@@ -48,6 +64,10 @@ namespace Persistence
             services.AddScoped<IUnitService, UnitService>();
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<ICategoryService, CategoryService>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IRoleService, RoleService>();
+            services.AddScoped<IAddressService, AddressService>();
+            services.AddScoped<IPermissionService, PermissionService>();
             #endregion
         }
     }

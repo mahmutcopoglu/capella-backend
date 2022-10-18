@@ -21,6 +21,10 @@ namespace Persistence.Contexts
         public DbSet<ClassificationAttribute> ClassificationAttributes { get; set; }
         public DbSet<ClassificationAttributeValue> ClassificationAttributeValues { get; set; }
         public DbSet<Media> Medias { get; set; }
+        public DbSet<User> Users { get; set; }
+        public DbSet<Role> Roles { get; set; }
+        public DbSet<Permission> Permissions { get; set; }
+        public DbSet<Address> Addresses { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -54,8 +58,21 @@ namespace Persistence.Contexts
                 .WithMany(classificationAttributeValues => classificationAttributeValues.Products)
                 .UsingEntity(j => j.ToTable("ProductClassificationAttributeValues"));
 
+            modelBuilder
+                .Entity<User>()
+                .HasMany(user => user.Addresses)
+                .WithOne(address => address.User);
 
+            modelBuilder
+               .Entity<User>()
+               .HasMany(user => user.Roles)
+               .WithOne(role => role.User);
 
+            modelBuilder
+                .Entity<Role>()
+                .HasMany(role => role.Permissions)
+                .WithMany(permission => permission.Roles)
+                .UsingEntity(crossTable => crossTable.ToTable("RolesPermissions"));
 
         }
     }
