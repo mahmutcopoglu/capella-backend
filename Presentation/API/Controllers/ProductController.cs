@@ -1,4 +1,5 @@
-﻿using Application.DataTransferObject;
+﻿using API.Filters;
+using Application.DataTransferObject;
 using Application.Repositories.ProductAbstract;
 using Application.Services;
 using AutoMapper;
@@ -22,6 +23,7 @@ namespace API.Controllers
         }
 
         [HttpPost("/product")]
+        [ServiceFilter(typeof(CustomAuthorizationFilter)), PermissionAttribute("product_added", "product_deleted")]
         public async Task<IActionResult> AddProduct([FromBody] ProductDto productDto)
         {
             var result = await _productService.saveProduct(productDto);

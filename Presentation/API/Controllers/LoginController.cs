@@ -23,7 +23,8 @@ namespace API.Controllers
         {
             var user = await _userService.loadByUser(loginDto);
             var token = _tokenService.generateToken(user);
-            return Ok(token);
+
+            return Ok(token.Result);
         }
     }
 }

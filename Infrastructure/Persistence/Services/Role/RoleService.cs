@@ -1,8 +1,9 @@
 ﻿using Application.DataTransferObject;
 using Application.Repositories;
-using Application.Services.Role;
+using Application.Services;
 using AutoMapper;
 using Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,7 +23,13 @@ namespace Persistence.Services
             _roleWriteRepository = roleWriteRepository;
             _permissionReadRepository = permissionReadRepository;
         }
-    
+
+        public async Task<Role> getRoleById(int roleId)
+        {
+            var role = await _roleReadRepository.GetWhereWithInclude(x=> x.Id == roleId,true, x => x.Permissions).FirstOrDefaultAsync();
+            return role;
+        }
+
         public async Task<bool> save(RoleDto roleDto)
         {
             Role role = new();

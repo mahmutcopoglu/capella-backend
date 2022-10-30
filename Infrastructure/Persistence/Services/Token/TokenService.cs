@@ -1,9 +1,9 @@
 ﻿using Application.DataTransferObject;
 using Application.Repositories;
 using Application.Services.Token;
+using Microsoft.Extensions.Configuration;
 using Domain.Entities;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
@@ -12,6 +12,8 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using System.Security.Principal;
+using Application.Services;
 
 namespace Persistence.Services.Token
 {
@@ -19,6 +21,7 @@ namespace Persistence.Services.Token
     {
         private readonly IConfiguration _configuration;
         private readonly IUserReadRepository _userReadRepository;
+        private readonly IRoleService _roleService;
 
         public TokenService(IConfiguration configuration, IUserReadRepository userReadRepository)
         {
@@ -28,18 +31,16 @@ namespace Persistence.Services.Token
         public async Task<JWTToken> generateToken(User user)
         {
             JWTToken jwtToken = new();
-           
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Name, user.Firstname),
-                new Claim(ClaimTypes.DateOfBirth, user.BirthDate.ToString()),
-                new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Surname, user.Lastname)
-            };
+
+            var claims = new List<Claim>();
+            claims.Add(new Claim("firstname", user.Firstname));
+            claims.Add(new Claim("lastname", user.Lastname));
+            claims.Add(new Claim("dateofbirth", user.BirthDate.ToString()));
+            claims.Add(new Claim("email", user.Email));
 
             foreach(var item in user.Roles)
             {
-                claims.Add(new Claim(ClaimTypes.Role, item.Id.ToString()));
+                claims.Add(new Claim("role", item.Id.ToString()));
             }
 
             SymmetricSecurityKey securityKey = new(Encoding.UTF8.GetBytes(_configuration["Token:SecurityKey"]));
@@ -60,5 +61,44 @@ namespace Persistence.Services.Token
             return jwtToken;
         }
 
+        public bool isTokenValid(string token)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var validationParameters = GetValidationParameters();
+            SecurityToken validatedToken;
+            try
+            {
+                IPrincipal principal = tokenHandler.ValidateToken(token, validationParameters, out validatedToken);
+            }
+            catch(Exception ex)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        private TokenValidationParameters GetValidationParameters()
+        {
+            return new TokenValidationParameters()
+            {
+
+                ValidateIssuerSigningKey = true,
+                ValidateLifetime = true,
+                ValidateIssuer = true,
+                ValidateAudience = true,
+
+
+                ValidAudience = _configuration["Token:Auidience"],
+                ValidIssuer = _configuration["Token:Issuer"],
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Token:SecurityKey"]))
+            };
+        }
+
+        //private List<string> getRolePermission(int id, string token)
+        //{
+        //    var jwt = new JwtSecurityTokenHandler().ReadJwtToken(token);
+        //    List<Role> role = jwt.Claims.First(c => c.Type == "role").Value.;
+
+        //}
     }
 }

@@ -1,5 +1,5 @@
 ﻿using Application.DataTransferObject;
-using Application.Services.Role;
+using Application.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -27,6 +27,14 @@ namespace API.Controllers
             {
                 return Ok(true);
             }
+
+        }
+
+        [HttpGet("{roleId}")]
+        public async Task<IActionResult> GetRoleById(int roleId)
+        {
+            var role = await _roleService.getRoleById(roleId);
+            return Ok(role);
 
         }
     }

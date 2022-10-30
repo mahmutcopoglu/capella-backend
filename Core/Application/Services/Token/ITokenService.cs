@@ -11,5 +11,7 @@ namespace Application.Services.Token
     public interface ITokenService
     {
         Task<JWTToken> generateToken(User user);
+
+        bool isTokenValid(string token);
     }
 }
