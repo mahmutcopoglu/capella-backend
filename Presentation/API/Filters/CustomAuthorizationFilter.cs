@@ -48,9 +48,9 @@ namespace API.Filters
 
                             var arguments = ((ControllerActionDescriptor)context.ActionDescriptor).MethodInfo.CustomAttributes.FirstOrDefault(fd => fd.AttributeType == typeof(PermissionAttribute)).ConstructorArguments;
                             var permission = (string)arguments[0].Value;
-                            var yetkiDurumu = await _tokenService.getRolePermission(userToken, permission);
+                            var isAuthorized = await _tokenService.getRolePermission(userToken, permission);
 
-                            if (!yetkiDurumu)
+                            if (!isAuthorized)
                             {
                                 context.Result = new ObjectResult(context.ModelState)
                                 {
