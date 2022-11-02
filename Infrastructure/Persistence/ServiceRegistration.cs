@@ -65,6 +65,8 @@ namespace Persistence
             services.AddScoped<IPermissionService, PermissionService>();
             services.AddScoped<ITokenService, TokenService>();
             #endregion
+
+            
         }
     }
 }

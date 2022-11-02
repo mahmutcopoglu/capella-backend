@@ -14,6 +14,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Security.Principal;
 using Application.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace Persistence.Services.Token
 {
@@ -21,12 +22,13 @@ namespace Persistence.Services.Token
     {
         private readonly IConfiguration _configuration;
         private readonly IUserReadRepository _userReadRepository;
-        private readonly IRoleService _roleService;
+        private readonly IRoleReadRepository _roleReadRepository;
 
-        public TokenService(IConfiguration configuration, IUserReadRepository userReadRepository)
+        public TokenService(IConfiguration configuration, IUserReadRepository userReadRepository, IRoleReadRepository roleReadRepository)
         {
             _configuration = configuration;
             _userReadRepository = userReadRepository;
+            _roleReadRepository = roleReadRepository;
         }
         public async Task<JWTToken> generateToken(User user)
         {
@@ -77,7 +79,7 @@ namespace Persistence.Services.Token
             return true;
         }
 
-        private TokenValidationParameters GetValidationParameters()
+        public TokenValidationParameters GetValidationParameters()
         {
             return new TokenValidationParameters()
             {
@@ -94,11 +96,18 @@ namespace Persistence.Services.Token
             };
         }
 
-        //private List<string> getRolePermission(int id, string token)
-        //{
-        //    var jwt = new JwtSecurityTokenHandler().ReadJwtToken(token);
-        //    List<Role> role = jwt.Claims.First(c => c.Type == "role").Value.;
+        public async Task<bool> getRolePermission(string token, string permission)
+        {
+            var jwt = new JwtSecurityTokenHandler().ReadJwtToken(token);
+            var roles = jwt.Claims.First(c => c.Type == "role").Value;
+            foreach(var item in roles)
+            {
+                var role = await _roleReadRepository.GetWhereWithInclude(x => x.Id == item, true, x => x.Permissions).FirstOrDefaultAsync();
+                var hasAuthority = role.Permissions.Where(p => p.Code == permission);
+            }
+            return true;
+        }
 
-        //}
+        
     }
 }

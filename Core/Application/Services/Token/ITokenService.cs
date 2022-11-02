@@ -1,5 +1,6 @@
 ﻿using Application.DataTransferObject;
 using Domain.Entities;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,5 +14,9 @@ namespace Application.Services.Token
         Task<JWTToken> generateToken(User user);
 
         bool isTokenValid(string token);
+
+        TokenValidationParameters GetValidationParameters();
+
+        Task<bool> getRolePermission(string token, string permission);
     }
 }
