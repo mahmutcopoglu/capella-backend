@@ -2,9 +2,9 @@
 {
     public class PermissionAttribute: Attribute
     {
-        public string[] _permissions { get; set; }
+        public string _permissions { get; set; }
 
-        public PermissionAttribute(params string[] permissions)
+        public PermissionAttribute(string permissions)
         {
             _permissions = permissions; 
         }

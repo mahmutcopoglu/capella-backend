@@ -23,12 +23,14 @@ namespace Persistence.Services.Token
         private readonly IConfiguration _configuration;
         private readonly IUserReadRepository _userReadRepository;
         private readonly IRoleReadRepository _roleReadRepository;
+        private readonly IPermissionReadRepository _permissionReadRepository;
 
-        public TokenService(IConfiguration configuration, IUserReadRepository userReadRepository, IRoleReadRepository roleReadRepository)
+        public TokenService(IConfiguration configuration, IUserReadRepository userReadRepository, IRoleReadRepository roleReadRepository, IPermissionReadRepository permissionReadRepository)
         {
             _configuration = configuration;
             _userReadRepository = userReadRepository;
             _roleReadRepository = roleReadRepository;
+            _permissionReadRepository = permissionReadRepository;
         }
         public async Task<JWTToken> generateToken(User user)
         {
@@ -99,13 +101,15 @@ namespace Persistence.Services.Token
         public async Task<bool> getRolePermission(string token, string permission)
         {
             var jwt = new JwtSecurityTokenHandler().ReadJwtToken(token);
-            var roles = jwt.Claims.First(c => c.Type == "role").Value;
-            foreach(var item in roles)
+            var roles = jwt.Claims.Where(c => c.Type == "role").ToArray();
+            List<int> authortiy = new List<int>();
+            foreach (var role in roles)
             {
-                var role = await _roleReadRepository.GetWhereWithInclude(x => x.Id == item, true, x => x.Permissions).FirstOrDefaultAsync();
-                var hasAuthority = role.Permissions.Where(p => p.Code == permission);
+                
+                authortiy.Add(Convert.ToInt16(role.Value));
             }
-            return true;
+            var isAuthorized = await _permissionReadRepository.GetWhereWithInclude(x => (x.Code == permission && x.Roles.Where(x => authortiy.Contains(x.Id)).Any()), true, x => x.Roles).AnyAsync();
+            return isAuthorized;
         }
 
         

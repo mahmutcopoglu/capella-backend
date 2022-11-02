@@ -25,8 +25,6 @@ namespace API.Filters
             return;
         }
 
-        
-
         public bool HasRoleAttribute(FilterContext context)
         {
             return ((ControllerActionDescriptor)context.ActionDescriptor).MethodInfo.CustomAttributes.Any(filterDescriptors => filterDescriptors.AttributeType == typeof(PermissionAttribute));
@@ -49,21 +47,19 @@ namespace API.Filters
                         {
 
                             var arguments = ((ControllerActionDescriptor)context.ActionDescriptor).MethodInfo.CustomAttributes.FirstOrDefault(fd => fd.AttributeType == typeof(PermissionAttribute)).ConstructorArguments;
+                            var permission = (string)arguments[0].Value;
+                            var yetkiDurumu = await _tokenService.getRolePermission(userToken, permission);
 
-
-                            //foreach (var item in test)
-                            //{
-                            //    var yetkiDurumu = await _tokenService.getRolePermission(userToken, "adasdas");
-                            //    if (yetkiDurumu)
-                            //    {
-                            //        context.Result = new ObjectResult(context.ModelState)
-                            //        {
-                            //            Value = "You are not authorized for this page",
-                            //            StatusCode = Microsoft.AspNetCore.Http.StatusCodes.Status403Forbidden
-                            //        };
-                            //        return;
-                            //    }
-                            //}
+                            if (!yetkiDurumu)
+                            {
+                                context.Result = new ObjectResult(context.ModelState)
+                                {
+                                    Value = "You are not authorized for this page",
+                                    StatusCode = Microsoft.AspNetCore.Http.StatusCodes.Status403Forbidden
+                                };
+                                return;
+                            }
+                            await next();
 
                         }
                     }
