@@ -4,6 +4,7 @@ using Application.Services;
 using AutoMapper;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using Persistence.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -49,5 +50,12 @@ namespace Persistence.Services
             var result = await _userWriteRepository.AddAsync(user);
             return result;   
         }
+
+        public async Task<List<User>> userList()
+        {
+            List<User> users = await _userReadRepository.GetAll().ToListAsync();
+            return users;
+        }
+       
     }
 }
