@@ -11,7 +11,7 @@ namespace Application.Services
     public interface IUserService
     {
         Task<bool> save(UserDto userDto);
-
+        Task<List<User>> userList();
         Task<User> loadByUser(LoginDto loginDto);
     }
 }

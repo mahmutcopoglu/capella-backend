@@ -30,5 +30,12 @@ namespace API.Controllers
 
         }
 
+        [HttpGet("/user")]
+        public async Task<IActionResult> UserList()
+        {
+            var result = await _userService.userList();
+            return Ok(result);
+        }
+
     }
 }
